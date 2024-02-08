@@ -1,22 +1,22 @@
 'use server'
 import * as z from 'zod';
 import { db } from "@/lib/db"
-import { CampamentoSchema } from "@/schemas"
+import { CampamentoSchema, WingSchema } from "@/schemas"
 import { revalidatePath } from 'next/cache';
 
-export const addCampamentos = async (values: z.infer<typeof CampamentoSchema> ) => {
-    const validatedFields = CampamentoSchema.safeParse(values);
+export const addWing = async (values: z.infer<typeof WingSchema> ) => {
+    const validatedFields = WingSchema.safeParse(values);
     if(!validatedFields.success) return { error: "Campos incorrectos" }
 
-    await db.campamento.create({
+    await db.wing.create({
         data: {
             ...values
         }
     })
 
-    revalidatePath('/campamentos');
+    revalidatePath('/wings');
 
-    return { success: "Campamento añadido éxitosamente!." }
+    return { success: "Ala añadida éxitosamente!." }
 }
 export const deleteCampamento = async ({id}:{id:string} ) => {
 
@@ -54,14 +54,4 @@ export const editCampamento = async ({values, id}:{values: z.infer<typeof Campam
     revalidatePath('/campamentos');
 
     return { success: "Campamento actualizado éxitosamente!." }
-}
-export const getCampamento = async ({id}:{id:string} ) => {
-
-    const campamento = await db.campamento.findUnique({
-        where: { id }
-    }) 
-
-    if(!campamento) return { error: "No se ha encontrado el campamento!." }
-
-    return campamento;
 }
