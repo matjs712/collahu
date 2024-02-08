@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EspacioSchema } from "@/schemas";
+import { EspacioSchema, HabitacionSchema } from "@/schemas";
 import { useEffect, useState, useTransition } from "react";
 import { getCampamentos } from "@/actions/campamentos";
 import {  BarLoader } from 'react-spinners';
@@ -28,17 +28,20 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "
 import { cn } from "@/lib/utils";
 import { addEspacio } from "@/actions/espacios";
 import { getEspaciosData } from "@/data/espacios";
-import { Espacio, columns } from "@/app/_components/espacios/epsacios_columns";
-import Espacios from "@/app/_components/espacios/espacios";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { addHabitacion } from "@/actions/habitacion";
+import Habitaciones from "@/app/_components/habitaciones/habitaciones";
+import { Habitacion, columns } from "@/app/_components/habitaciones/habitaciones_columns";
+import { getHabitacionesData } from "@/data/habitaciones";
 
 
-const EspaciosPage = () => {
+const HabitacionesPage = () => {
 
   const [isPending, startTransition] = useTransition()
   const [success, setSuccess] = useState<string | undefined>("");
   const [error, setError] = useState<string | undefined>("");
   const [wings, setWings] = useState<Wing[]>([]);
-  const [espacios, setEspacios] = useState<Espacio[]>([]);
+  const [habitaciones, setHabitaciones] = useState<Habitacion[]>([]);
   const [campamentos, setCampamentos] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [open, setOpen] = useState<boolean>(false);
@@ -53,8 +56,8 @@ const EspaciosPage = () => {
     setLoading(true);
     const fetchData = async () => {
       try {
-        const espaciosData = await getEspaciosData();
-        setEspacios(espaciosData);
+        const habitacionData = await getHabitacionesData();
+        setHabitaciones(habitacionData);
         const campamentosData = await getCampamentos();
         console.log('campamentos',campamentosData);
         setCampamentos(campamentosData);
@@ -68,17 +71,22 @@ const EspaciosPage = () => {
     fetchData();
   }, []);
 
-  const form = useForm<z.infer<typeof EspacioSchema>>({
-    resolver: zodResolver(EspacioSchema),
+  const form = useForm<z.infer<typeof HabitacionSchema>>({
+    resolver: zodResolver(HabitacionSchema),
     defaultValues: {
       campamentoId: "asd",
       wingId: "asd",
-      nombre: "",
+      numero: 0,
       descripcion: "",
+      n_camas: 0,
+      tipo_huesped: "",
+      tipo_cargos: "",
+      tipo_banio: "",
+      tipo_turnos: "",
     },
   })
   
-  const onSubmit = (values: z.infer<typeof EspacioSchema>) =>{
+  const onSubmit = (values: z.infer<typeof HabitacionSchema>) =>{
     if(!id) {
       setError('Selecciona un campamento');
       return;
@@ -87,8 +95,9 @@ const EspaciosPage = () => {
       setError('Selecciona un ala');
       return;
     }
+    console.log({...values, campamentoId: id, wingId: idWing});
     startTransition(async ()=>{
-        addEspacio({...values, campamentoId: id, wingId: idWing})
+        addHabitacion({...values, campamentoId: id, wingId: idWing})
           .then( resp=> {
             if(resp.success){
               setSuccess(resp.success);
@@ -105,16 +114,16 @@ const EspaciosPage = () => {
   return (
     <div className="flex items-center justify-between flex-wrap">
       <div className="flex w-full items-center justify-between flex-wrap">
-        <h1 className="text-3xl">Espacios</h1>
+        <h1 className="text-3xl">Habitaciones</h1>
         <Dialog>
           <DialogTrigger className="bg-[#169f85] hover:bg-[#169f85] font-normal p-2 rounded-md text-white">
-            CREAR ESPACIO
+            CREAR HABITACIÓN
           </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className="w-full text-center font-normal">Crear espacio</DialogTitle>
+          <DialogContent className="">
+            <DialogHeader className="h-[80vh]">
+              <DialogTitle className="w-full text-center font-normal">Crear habitación</DialogTitle>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 overflow-auto">
 
                 <FormField
                       control={form.control}
@@ -229,15 +238,24 @@ const EspaciosPage = () => {
                             </FormItem>
                             )}
                         />
-
-                  <FormField
+                    <FormField
                     control={form.control}
-                    name="nombre"
+                    name="numero"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className='text-md'>Nombre</FormLabel>
+                        <FormLabel className='text-md'>Número</FormLabel>
                         <FormControl>
-                          <Input  {...field} type="text" placeholder="Ala 1" disabled={isPending}/>
+                          <Input {...field}
+                            value={Number(field.value) || 0}
+                            type='number' 
+                            placeholder="0"
+                            min={0}
+                            disabled={isPending}
+                            onChange={(e) => {
+                              const newValue = e.target.value;
+                              field.onChange(newValue !== '' ? Number(newValue) : ''); // Convertir a número
+                            }}
+                            />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -256,7 +274,136 @@ const EspaciosPage = () => {
                       </FormItem>
                     )}
                   />
-                  
+                   <FormField
+                    control={form.control}
+                    name="n_camas"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='text-md'>Número de camas</FormLabel>
+                        <FormControl>
+                          <Input {...field}
+                            value={Number(field.value) || 0}
+                            type='number' 
+                            placeholder="0"
+                            min={0}
+                            disabled={isPending}
+                            onChange={(e) => {
+                              const newValue = e.target.value;
+                              field.onChange(newValue !== '' ? Number(newValue) : ''); // Convertir a número
+                            }}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                    <div className="flex flex-wrap items-center gap-4">
+
+                    
+                    <FormField
+                    control={form.control}
+                    name="tipo_huesped"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='text-md'>Tipo de huesped</FormLabel>
+                        <FormControl>
+                        <Select 
+                            onValueChange={field.onChange}
+                        >
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Seleccione un tipo" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="mujeres">Mujeres</SelectItem>
+                                <SelectItem value="hombres">Hombres</SelectItem>
+                            </SelectContent>
+                            </Select>
+
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                    <FormField
+                    control={form.control}
+                    name="tipo_banio"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='text-md'>Tipo de baño</FormLabel>
+                        <FormControl>
+                        <Select 
+                            onValueChange={field.onChange}
+                        >
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Seleccione un tipo" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="individual">Individual</SelectItem>
+                                <SelectItem value="compartido">Compartido</SelectItem>
+                                <SelectItem value="colectivo">Colectivo</SelectItem>
+                            </SelectContent>
+                            </Select>
+
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                    <FormField
+                    control={form.control}
+                    name="tipo_cargos"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='text-md'>Cargos Reservados</FormLabel>
+                        <FormControl>
+                        <Select 
+                            onValueChange={field.onChange}
+                        >
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Seleccione un tipo" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Gerente">Gerente</SelectItem>
+                                <SelectItem value="SubGenerente">Subgerente</SelectItem>
+                                <SelectItem value="Inspector">Inspector</SelectItem>
+                                <SelectItem value="Operario">Operario</SelectItem>
+                                <SelectItem value="Todos">Todos</SelectItem>
+                            </SelectContent>
+                            </Select>
+
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                    <FormField
+                    control={form.control}
+                    name="tipo_turnos"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='text-md'>Turnos Rotativos</FormLabel>
+                        <FormControl>
+                        <Select 
+                            onValueChange={field.onChange}
+                        >
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Seleccione un tipo" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Gerente">7x7</SelectItem>
+                                <SelectItem value="SubGenerente">4x3</SelectItem>
+                                <SelectItem value="Inspector">VIP</SelectItem>
+                            </SelectContent>
+                            </Select>
+
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+
+</div>
                         <FormError message={error} />
                         <FormSuccess message={success} />
                   <Button disabled={isPending} type="submit" size="lg" className='w-full text-md font-semibold'>{isPending ? <BarLoader color="white"/> : 'Crear'}</Button>
@@ -270,11 +417,11 @@ const EspaciosPage = () => {
       <Toaster />
       <Card className="w-[380px] sm:w-full h-fit-content">
         <CardContent className="pt-5">
-          <Espacios columns={columns} data={espacios}/> 
+          <Habitaciones columns={columns} data={habitaciones}/> 
         </CardContent>
       </Card>
     </div>
   );
 };
 
-export default EspaciosPage;
+export default HabitacionesPage;

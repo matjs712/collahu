@@ -203,7 +203,8 @@ const WingsPage = () => {
                           <Input {...field}
                             value={Number(field.value) || 0}
                             type='number' 
-                            placeholder="0" 
+                            placeholder="0"
+                            min={0}
                             disabled={isPending}
                             onChange={(e) => {
                               const newValue = e.target.value;
@@ -218,7 +219,7 @@ const WingsPage = () => {
                   
                         <FormError message={error} />
                         <FormSuccess message={success} />
-                  <Button disabled={isPending} type="submit" size="lg" className='w-full text-md font-semibold'>{isPending ? <BarLoader color="white"/> : 'Entrar'}</Button>
+                  <Button disabled={isPending} type="submit" size="lg" className='w-full text-md font-semibold'>{isPending ? <BarLoader color="white"/> : 'Crear'}</Button>
                 </form>
               </Form>
             </DialogHeader>

@@ -13,17 +13,19 @@ datasource db {
 }
 
 model User {
-  id               String           @id @default(cuid())
-  name             String
-  email            String
-  password         String
-  apellido_paterno String?
-  apellido_materno String?
-  fecha_nacimiento DateTime?
-  createdAt        DateTime         @default(now()) @map("created_at")
-  updatedAt        DateTime         @updatedAt @map("updated_at")
-  habitaciones     HabitacionUser[]
-  sessions         Session[]
+  id       String  @id @default(cuid())
+  name     String
+  email    String
+  password String?
+  rut      String?
+  telefono String?
+  cargo    String?
+  rol      String?
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  // habitaciones HabitacionUser[]
+  sessions  Session[]
 }
 
 model Session {
@@ -60,26 +62,28 @@ model Habitacion {
   id           String  @id @default(cuid())
   campamentoId String
   wingId       String
-  userId       String
-  numero       Int
+  numero       Int?
   descripcion  String?
   n_camas      Int?
-  tipo_huesped Int?
+  tipo_huesped String?
+  tipo_banio   String?
+  tipo_cargos  String?
+  tipo_turnos  String?
 
-  campamento Campamento       @relation(fields: [campamentoId], references: [id], onDelete: Cascade)
-  wing       Wing             @relation(fields: [wingId], references: [id], onDelete: Cascade)
-  usuarios   HabitacionUser[]
+  campamento Campamento @relation(fields: [campamentoId], references: [id], onDelete: Cascade)
+  wing       Wing       @relation(fields: [wingId], references: [id], onDelete: Cascade)
+  // usuarios   HabitacionUser[]
 }
 
-model HabitacionUser {
-  id           String     @id @default(cuid())
-  habitacionId String
-  userId       String
-  habitacion   Habitacion @relation(fields: [habitacionId], references: [id])
-  user         User       @relation(fields: [userId], references: [id])
+// model HabitacionUser {
+//   id           String     @id @default(cuid())
+//   habitacionId String
+//   userId       String
+//   habitacion   Habitacion @relation(fields: [habitacionId], references: [id])
+//   user         User       @relation(fields: [userId], references: [id])
 
-  @@unique([habitacionId, userId])
-}
+//   @@unique([habitacionId, userId])
+// }
 
 model Espacio {
   id           String  @id @default(cuid())

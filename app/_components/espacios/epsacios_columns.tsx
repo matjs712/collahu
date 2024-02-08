@@ -1,44 +1,28 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpIcon, DotsVerticalIcon } from "@radix-ui/react-icons"
+import { DotsVerticalIcon } from "@radix-ui/react-icons"
 
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Delete from "./delete"
-import EditCampamento from "./edit_campamento"
 
-export type Wing = {
+
+export type Espacio = {
   id:                string
   nombre: string,
   campamentoId?: string,
+  wingId?: string,
   descripcion?: string,
-  habitaciones?: number,
-}
-
-export type Campamento = {
-    id:                string
-    nombre:            string
-    descripcion?:       string
-    img?:               string
-}
-export type Campamento2 = {
-    id:                string
-    nombre:            string
-    descripcion?:       string
-    img?:               string
-    wings?:            Wing[]
 }
 
 
-export const columns: ColumnDef<Campamento>[] = [
+export const columns: ColumnDef<Espacio>[] = [
     // {
     //   accessorKey: "id",
     //   header: "ID",
@@ -52,14 +36,18 @@ export const columns: ColumnDef<Campamento>[] = [
       header: "Descripcion",
     },
     {
-      accessorKey: "img",
-      header: "Imagen",
+      accessorKey: "campamento.nombre",
+      header: "Campamento",
+    },
+    {
+      accessorKey: "wing.nombre",
+      header: "Ala",
     },
     {
       header: "",
       id: "Configuración",
       cell: ({ row }) => {
-        const campamento = row.original
+        const espacio = row.original
    
         return (
           <DropdownMenu>
@@ -74,10 +62,10 @@ export const columns: ColumnDef<Campamento>[] = [
               {/* <SeeMoreMedicine medicine={medicine}/> */}
 
               <DropdownMenuSeparator />
-              <EditCampamento campamento={campamento} id={campamento.id}/>
+              {/* @ts-ignore */}
+              {/* <EditWing wing={wing} id={wing.id}/> */}
               <DropdownMenuSeparator />
-              <Delete id={campamento.id}/>
-
+              <Delete id={espacio.id}/>
             </DropdownMenuContent>
           </DropdownMenu>
         )

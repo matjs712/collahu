@@ -13,32 +13,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Delete from "./delete"
-import EditCampamento from "./edit_campamento"
+import EditCampamento from "./edit_motivo"
 
-export type Wing = {
-  id:                string
-  nombre: string,
-  campamentoId?: string,
-  descripcion?: string,
-  habitaciones?: number,
-}
-
-export type Campamento = {
+export type Motivo = {
     id:                string
     nombre:            string
-    descripcion?:       string
-    img?:               string
-}
-export type Campamento2 = {
-    id:                string
-    nombre:            string
-    descripcion?:       string
-    img?:               string
-    wings?:            Wing[]
+    descripcion?:      string
+    prioridad:         Number
 }
 
 
-export const columns: ColumnDef<Campamento>[] = [
+export const columns: ColumnDef<Motivo>[] = [
     // {
     //   accessorKey: "id",
     //   header: "ID",
@@ -52,14 +37,14 @@ export const columns: ColumnDef<Campamento>[] = [
       header: "Descripcion",
     },
     {
-      accessorKey: "img",
-      header: "Imagen",
+      accessorKey: "prioridad",
+      header: "Prioridad",
     },
     {
       header: "",
       id: "Configuración",
       cell: ({ row }) => {
-        const campamento = row.original
+        const motivos = row.original
    
         return (
           <DropdownMenu>
@@ -74,9 +59,9 @@ export const columns: ColumnDef<Campamento>[] = [
               {/* <SeeMoreMedicine medicine={medicine}/> */}
 
               <DropdownMenuSeparator />
-              <EditCampamento campamento={campamento} id={campamento.id}/>
+              {/* <EditMotivos motivos={motivos} id={motivos.id}/> */}
               <DropdownMenuSeparator />
-              <Delete id={campamento.id}/>
+              <Delete id={motivos.id}/>
 
             </DropdownMenuContent>
           </DropdownMenu>

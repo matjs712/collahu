@@ -65,3 +65,13 @@ export const getCampamento = async ({id}:{id:string} ) => {
 
     return campamento;
 }
+export const getCampamentos = async () => {
+
+    const campamentos = await db.campamento.findMany({
+        include:{
+            wings: true
+        }
+    }) 
+
+    return campamentos;
+}
