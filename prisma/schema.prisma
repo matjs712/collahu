@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// prisma/schema.prisma
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id               String           @id @default(cuid())
+  name             String
+  email            String
+  password         String
+  apellido_paterno String?
+  apellido_materno String?
+  fecha_nacimiento DateTime?
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+  habitaciones     HabitacionUser[]
+  sessions         Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  createAt  DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  expires   String
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Campamento {
+  id           String       @id @default(cuid())
+  nombre       String
+  descripcion  String?
+  img          String?
+  wings        Wing[]
+  habitaciones Habitacion[]
+  espacios     Espacio[]
+}
+
+model Wing {
+  id             String       @id @default(cuid())
+  campamentoId   String
+  nombre         String
+  descripcion    String?
+  n_habitaciones Int?
+  habitaciones   Habitacion[]
+  espacio        Espacio[]
+  campamento     Campamento   @relation(fields: [campamentoId], references: [id], onDelete: Cascade)
+}
+
+model Habitacion {
+  id           String  @id @default(cuid())
+  campamentoId String
+  wingId       String
+  userId       String
+  numero       Int
+  descripcion  String?
+  n_camas      Int?
+  tipo_huesped Int?
+
+  campamento Campamento       @relation(fields: [campamentoId], references: [id], onDelete: Cascade)
+  wing       Wing             @relation(fields: [wingId], references: [id], onDelete: Cascade)
+  usuarios   HabitacionUser[]
+}
+
+model HabitacionUser {
+  id           String     @id @default(cuid())
+  habitacionId String
+  userId       String
+  habitacion   Habitacion @relation(fields: [habitacionId], references: [id])
+  user         User       @relation(fields: [userId], references: [id])
+
+  @@unique([habitacionId, userId])
+}
+
+model Espacio {
+  id           String  @id @default(cuid())
+  campamentoId String
+  wingId       String
+  nombre       String
+  descripcion  String?
+
+  campamento Campamento @relation(fields: [campamentoId], references: [id], onDelete: Cascade)
+  wing       Wing       @relation(fields: [wingId], references: [id], onDelete: Cascade)
+}
+
+model Motivos {
+  id          String @id @default(cuid())
+  nombre      String
+  descripcion String
+  prioridad   Int
+}
