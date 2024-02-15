@@ -7,9 +7,9 @@ export async function GET () {
         include:{
             campamento: true,
             wing: true,
+            Sector: true
         }
     });
-    console.log(wings);
     return NextResponse.json(wings, {headers: {
         'Cache-Control': 'public, max-age=1'
         }

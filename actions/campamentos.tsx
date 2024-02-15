@@ -69,7 +69,9 @@ export const getCampamentos = async () => {
 
     const campamentos = await db.campamento.findMany({
         include:{
-            wings: true
+            wings: true,
+            espacios: true,
+            sectores: true,
         }
     }) 
 

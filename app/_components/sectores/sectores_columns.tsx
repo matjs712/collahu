@@ -11,49 +11,31 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Delete from "./delete"
-import EditWing from "./edit_wing"
+import EditWing from "./edit_sector"
+import EditSector from "./edit_sector"
 
 
-export type Wing = {
+export type Sector = {
   id:                string
   nombre: string,
   campamentoId?: string,
-  sectorId?: string,
-  descripcion?: string,
-  habitaciones?: number,
 }
 
 
-export const columns: ColumnDef<Wing>[] = [
-    // {
-    //   accessorKey: "id",
-    //   header: "ID",
-    // },
+export const columns: ColumnDef<Sector>[] = [
     {
       accessorKey: "nombre",
       header: "Nombre",
-    },
-    {
-      accessorKey: "descripcion",
-      header: "Descripcion",
-    },
-    {
-      accessorKey: "n_habitaciones",
-      header: "n_habitaciones",
     },
     {
       accessorKey: "campamento.nombre",
       header: "Campamento",
     },
     {
-      accessorKey: "sector.nombre",
-      header: "Sector",
-    },
-    {
       header: "",
       id: "Configuración",
       cell: ({ row }) => {
-        const wing = row.original
+        const sector = row.original
    
         return (
           <DropdownMenu>
@@ -69,9 +51,9 @@ export const columns: ColumnDef<Wing>[] = [
 
               <DropdownMenuSeparator />
               {/* @ts-ignore */}
-              <EditWing wing={wing} id={wing.id}/>
+              <EditSector sector={sector} id={sector.id}/>
               <DropdownMenuSeparator />
-              <Delete id={wing.id}/>
+              <Delete id={sector.id}/>
             </DropdownMenuContent>
           </DropdownMenu>
         )

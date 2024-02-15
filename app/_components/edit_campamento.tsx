@@ -34,6 +34,7 @@ const EditCampamento = ({campamento, id}:{campamento:z.infer<typeof CampamentoSc
         defaultValues: {
           nombre: campamento.nombre || undefined,
           descripcion: campamento.descripcion || undefined,
+          direccion: campamento.direccion || undefined,
           img: "" || undefined
         },
       })
@@ -103,6 +104,19 @@ const EditCampamento = ({campamento, id}:{campamento:z.infer<typeof CampamentoSc
                         <FormLabel className='text-md'>Descripción</FormLabel>
                         <FormControl>
                           <Input {...field}  type='text' placeholder="Ingresa la descripción del campamento" disabled={isPending}/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="direccion"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='text-md'>Dirección</FormLabel>
+                        <FormControl>
+                          <Input {...field}  type='text' placeholder="Ingresa la dirección del campamento" disabled={isPending}/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

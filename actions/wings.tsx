@@ -16,7 +16,7 @@ export const addWing = async (values: z.infer<typeof WingSchema> ) => {
 
     revalidatePath('/wings');
 
-    return { success: "Ala añadida éxitosamente!." }
+    return { success: "Pabellón añadido éxitosamente!." }
 }
 export const deleteWing = async ({id}:{id:string} ) => {
 
@@ -24,7 +24,7 @@ export const deleteWing = async ({id}:{id:string} ) => {
         where: { id }
     }) 
 
-    if(!wing) return { error: "No se ha encontrado el wing!." }
+    if(!wing) return { error: "No se ha encontrado el pabellón!." }
 
     await db.wing.delete({
         where: { id }
@@ -32,7 +32,7 @@ export const deleteWing = async ({id}:{id:string} ) => {
 
     revalidatePath('/wings');
 
-    return { success: "Ala eliminada éxitosamente!." }
+    return { success: "Pabellón eliminada éxitosamente!." }
 }
 export const editWing = async ({values, id}:{values:
     //  z.infer<typeof WingSchema>
@@ -43,7 +43,7 @@ export const editWing = async ({values, id}:{values:
         where: { id }
     }) 
 
-    if(!wing) return { error: "No se ha encontrado el wing!." }
+    if(!wing) return { error: "No se ha encontrado el pabellón!." }
 
     await db.wing.update({
         where: {
@@ -56,5 +56,5 @@ export const editWing = async ({values, id}:{values:
 
     revalidatePath('/wings');
 
-    return { success: "Ala actualizada éxitosamente!." }
+    return { success: "Pabellón actualizada éxitosamente!." }
 }

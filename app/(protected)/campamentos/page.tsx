@@ -42,7 +42,7 @@ const CampamentosPage = () => {
       try {
         const campamentosData = await getCampamentosData();
         setCampamentos(campamentosData);
-        console.log(campamentosData)
+        console.log('data', campamentosData)
       } catch (error) {
         console.error('Error al traer la información de los campamentos:', error);
       } finally{
@@ -58,6 +58,7 @@ const CampamentosPage = () => {
     defaultValues: {
       nombre: "",
       descripcion: "",
+      direccion: "",
       img: "",
     },
   })
@@ -131,6 +132,19 @@ const CampamentosPage = () => {
                         <FormLabel className='text-md'>Descripción</FormLabel>
                         <FormControl>
                           <Input {...field}  type='text' placeholder="Ingresa la descripción del campamento" disabled={isPending}/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="direccion"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='text-md'>Dirección</FormLabel>
+                        <FormControl>
+                          <Input {...field}  type='text' placeholder="Ingresa la dirección del campamento" disabled={isPending}/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

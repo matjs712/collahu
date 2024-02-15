@@ -79,7 +79,8 @@ const HabitacionesPage = () => {
       numero: 0,
       descripcion: "",
       n_camas: 0,
-      tipo_huesped: "",
+      piso: "",
+      tipo_cama: "",
       tipo_cargos: "",
       tipo_banio: "",
       tipo_turnos: "",
@@ -119,7 +120,7 @@ const HabitacionesPage = () => {
           <DialogTrigger className="bg-[#169f85] hover:bg-[#169f85] font-normal p-2 rounded-md text-white">
             CREAR HABITACIÓN
           </DialogTrigger>
-          <DialogContent className="">
+          <DialogContent style={{ height:'90%', overflowY:'auto' }}>
             <DialogHeader className="h-[80vh]">
               <DialogTitle className="w-full text-center font-normal">Crear habitación</DialogTitle>
               <Form {...form}>
@@ -274,6 +275,19 @@ const HabitacionesPage = () => {
                       </FormItem>
                     )}
                   />
+                  <FormField
+                    control={form.control}
+                    name="piso"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='text-md'>Piso</FormLabel>
+                        <FormControl>
+                          <Input {...field}  type='text' placeholder="Piso de ejemplo..." disabled={isPending}/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                    <FormField
                     control={form.control}
                     name="n_camas"
@@ -300,6 +314,32 @@ const HabitacionesPage = () => {
                     <div className="flex flex-wrap items-center gap-4">
 
                     
+                    <FormField
+                    control={form.control}
+                    name="tipo_cama"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='text-md'>Tipo de cama</FormLabel>
+                        <FormControl>
+                        <Select 
+                            onValueChange={field.onChange}
+                        >
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Seleccione un tipo de cama" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="2 plazas">2 plazas</SelectItem>
+                                <SelectItem value="1 1/2">1 1/2</SelectItem>
+                                <SelectItem value="1 plaza">1 plaza</SelectItem>
+                                <SelectItem value="Litera">Litera</SelectItem>
+                            </SelectContent>
+                            </Select>
+
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                     <FormField
                     control={form.control}
                     name="tipo_huesped"

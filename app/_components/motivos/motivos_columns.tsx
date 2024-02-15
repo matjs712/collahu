@@ -16,10 +16,10 @@ import Delete from "./delete"
 import EditCampamento from "./edit_motivo"
 
 export type Motivo = {
-    id:                string
-    nombre:            string
-    descripcion?:      string
-    prioridad:         Number
+    id:                 string
+    tipo_requerimiento: string
+    descripcion?:       string
+    prioridad:          string
 }
 
 
@@ -29,8 +29,8 @@ export const columns: ColumnDef<Motivo>[] = [
     //   header: "ID",
     // },
     {
-      accessorKey: "nombre",
-      header: "Nombre",
+      accessorKey: "tipo_requerimiento",
+      header: "Tipo de requerimiento",
     },
     {
       accessorKey: "descripcion",

@@ -25,6 +25,7 @@ import { FormError } from '@/components/form-error'
 import { FormSuccess } from '@/components/form-success'
 import { getMotivosData } from "@/data/motivos";
 import { addMotivo } from "@/actions/motivos";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const MotivosPage = () => {
 
@@ -55,17 +56,13 @@ const MotivosPage = () => {
   const form = useForm<z.infer<typeof MotivoSchema>>({
     resolver: zodResolver(MotivoSchema),
     defaultValues: {
-      nombre: "",
+      tipo_requerimiento: "",
       descripcion: "",
-      prioridad: 0
+      prioridad: ""
     },
   })
   
   const onSubmit = (values: z.infer<typeof MotivoSchema>) =>{
-    if(values.prioridad < 0 || values.prioridad > 3) {
-        toast('Por favor ingresa la prioridad dentro de los valores permitidos (1-3)');
-        return false;
-    }
     startTransition(async ()=>{
         addMotivo(values)
           .then( resp=> {
@@ -94,14 +91,29 @@ const MotivosPage = () => {
               <DialogTitle className="w-full text-center font-normal">Crear motivo</DialogTitle>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                  <FormField
+                <FormField
                     control={form.control}
-                    name="nombre"
+                    name="tipo_requerimiento"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className='text-md'>Nombre</FormLabel>
+                        <FormLabel className='text-md'>Tipo de Requerimiento</FormLabel>
                         <FormControl>
-                          <Input  {...field} type="text" placeholder="Mal aseo" disabled={isPending}/>
+                        <Select 
+                            onValueChange={field.onChange}
+                        >
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Seleccione un tipo de requerimiento" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Obras civiles">Obras civiles</SelectItem>
+                                <SelectItem value="Eléctricos">Eléctricos</SelectItem>
+                                <SelectItem value="Sanitaríos">Sanitaríos</SelectItem>
+                                <SelectItem value="Climatización">Climatización</SelectItem>
+                                <SelectItem value="Agua Caliente">Agua Caliente</SelectItem>
+                                <SelectItem value="Cerrajería">Cerrajería</SelectItem>
+                            </SelectContent>
+                            </Select>
+
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -120,25 +132,26 @@ const MotivosPage = () => {
                       </FormItem>
                     )}
                   />
-                     <FormField
+                    <FormField
                     control={form.control}
                     name="prioridad"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className='text-md'>Prioridad (1-3)</FormLabel>
+                        <FormLabel className='text-md'>Prioridad</FormLabel>
                         <FormControl>
-                          <Input {...field}
-                            value={Number(field.value) || 0}
-                            type='number' 
-                            placeholder="0" 
-                            disabled={isPending}
-                            min={0}
-                            max={3}
-                            onChange={(e) => {
-                              const newValue = e.target.value;
-                              field.onChange(newValue !== '' ? Number(newValue) : ''); // Convertir a número
-                            }}
-                            />
+                        <Select 
+                            onValueChange={field.onChange}
+                        >
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Seleccione el nivel de prioridad" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Urgente">Urgente</SelectItem>
+                                <SelectItem value="Dentro del día">Dentro del día</SelectItem>
+                                <SelectItem value="Baja">Baja</SelectItem>
+                            </SelectContent>
+                            </Select>
+
                         </FormControl>
                         <FormMessage />
                       </FormItem>

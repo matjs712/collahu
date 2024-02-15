@@ -18,6 +18,7 @@ export type Espacio = {
   nombre: string,
   campamentoId?: string,
   wingId?: string,
+  sectorId?: string,
   descripcion?: string,
 }
 
@@ -40,8 +41,20 @@ export const columns: ColumnDef<Espacio>[] = [
       header: "Campamento",
     },
     {
+      accessorKey: "Sector.nombre",
+      header: "Sector",
+    },
+    {
+      accessorKey: "tipo",
+      header: "Tipo",
+    },
+    {
+      accessorKey: "inventario",
+      header: "Inventario",
+    },
+    {
       accessorKey: "wing.nombre",
-      header: "Ala",
+      header: "Pabellón",
     },
     {
       header: "",

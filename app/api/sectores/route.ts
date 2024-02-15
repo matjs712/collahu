@@ -3,14 +3,13 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET () {
-    const wings = await db.wing.findMany({
+    const sectores = await db.sector.findMany({
         include:{
-            campamento: true,
-            sector: true
+            campamento: true
         }
     });
-    console.log(wings);
-    return NextResponse.json(wings, {headers: {
+    console.log(sectores);
+    return NextResponse.json(sectores, {headers: {
         'Cache-Control': 'public, max-age=1'
         }
     });

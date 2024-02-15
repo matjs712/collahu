@@ -18,7 +18,7 @@ model User {
   email    String
   password String?
   rut      String?
-  telefono String?
+  telefono String
   cargo    String?
   rol      String?
 
@@ -41,21 +41,35 @@ model Campamento {
   id           String       @id @default(cuid())
   nombre       String
   descripcion  String?
+  direccion    String?
   img          String?
   wings        Wing[]
+  sectores     Sector[]
   habitaciones Habitacion[]
   espacios     Espacio[]
+}
+
+model Sector {
+  id           String     @id @default(cuid())
+  campamentoId String
+  nombre       String
+  wings        Wing[]
+  espacio      Espacio[]
+  campamento   Campamento @relation(fields: [campamentoId], references: [id], onDelete: Cascade)
 }
 
 model Wing {
   id             String       @id @default(cuid())
   campamentoId   String
+  sectorId       String
   nombre         String
+  piso           String?
   descripcion    String?
   n_habitaciones Int?
   habitaciones   Habitacion[]
   espacio        Espacio[]
   campamento     Campamento   @relation(fields: [campamentoId], references: [id], onDelete: Cascade)
+  sector         Sector       @relation(fields: [sectorId], references: [id], onDelete: Cascade)
 }
 
 model Habitacion {
@@ -65,6 +79,8 @@ model Habitacion {
   numero       Int?
   descripcion  String?
   n_camas      Int?
+  piso         String?
+  tipo_cama    String?
   tipo_huesped String?
   tipo_banio   String?
   tipo_cargos  String?
@@ -73,6 +89,29 @@ model Habitacion {
   campamento Campamento @relation(fields: [campamentoId], references: [id], onDelete: Cascade)
   wing       Wing       @relation(fields: [wingId], references: [id], onDelete: Cascade)
   // usuarios   HabitacionUser[]
+}
+
+model Espacio {
+  id           String  @id @default(cuid())
+  campamentoId String
+  sectorId     String?
+  wingId       String
+  nombre       String
+  tipo         String?
+  piso         String?
+  inventario   String?
+  descripcion  String?
+
+  campamento Campamento @relation(fields: [campamentoId], references: [id], onDelete: Cascade)
+  wing       Wing       @relation(fields: [wingId], references: [id], onDelete: Cascade)
+  Sector     Sector?    @relation(fields: [sectorId], references: [id])
+}
+
+model Motivos {
+  id                 String  @id @default(cuid())
+  tipo_requerimiento String
+  descripcion        String?
+  prioridad          String
 }
 
 // model HabitacionUser {
@@ -84,21 +123,3 @@ model Habitacion {
 
 //   @@unique([habitacionId, userId])
 // }
-
-model Espacio {
-  id           String  @id @default(cuid())
-  campamentoId String
-  wingId       String
-  nombre       String
-  descripcion  String?
-
-  campamento Campamento @relation(fields: [campamentoId], references: [id], onDelete: Cascade)
-  wing       Wing       @relation(fields: [wingId], references: [id], onDelete: Cascade)
-}
-
-model Motivos {
-  id          String @id @default(cuid())
-  nombre      String
-  descripcion String
-  prioridad   Int
-}

@@ -31,6 +31,8 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "
 import { cn } from "@/lib/utils";
 import { Campamento } from "@/app/_components/campamentos_columns";
 import { addWing } from "@/actions/wings";
+import { Sector } from "@/app/_components/sectores/sectores_columns";
+import { getSectoresData } from "@/data/sectores";
 // import { uploadImage } from "@/hooks/useUploadImg";
 
 const WingsPage = () => {
@@ -39,9 +41,14 @@ const WingsPage = () => {
   const [success, setSuccess] = useState<string | undefined>("");
   const [error, setError] = useState<string | undefined>("");
   const [wings, setWings] = useState<Wing[]>([]);
-  const [campamentos, setCampamentos] = useState<Campamento[]>([]);
+  const [campamentos, setCampamentos] = useState<any[]>([]);
+  const [sectores, setSectores] = useState<Sector[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [open, setOpen] = useState<boolean>(false);
+  const [openSector, setOpenSector] = useState<boolean>(false);
+  const [valueSector, setValueSector] = useState<string>("");
+  const [idSector, setIdSector] = useState<string>("");
+
   const [value, setValue] = useState<string>("");
   const [id, setId] = useState<string>("");
 
@@ -50,10 +57,11 @@ const WingsPage = () => {
     const fetchData = async () => {
       try {
         const wingsData = await getWingsData();
-        const campamentoData = await getCampamentosData();
         setWings(wingsData);
+        console.log('campamentosDaa',wingsData)
+        const campamentoData = await getCampamentosData();
         setCampamentos(campamentoData);
-        console.log(wingsData)
+
       } catch (error) {
         console.error('Error al traer la información de las alas:', error);
       } finally{
@@ -68,7 +76,9 @@ const WingsPage = () => {
     resolver: zodResolver(WingSchema),
     defaultValues: {
       campamentoId: "asd",
+      sectorId: "asd",
       nombre: "",
+      piso: "",
       descripcion: "",
       n_habitaciones: 0,
     },
@@ -80,7 +90,7 @@ const WingsPage = () => {
       return;
     }
     startTransition(async ()=>{
-        addWing({...values, campamentoId: id})
+        addWing({...values, campamentoId: id, sectorId: idSector})
           .then( resp=> {
             if(resp.success){
               setSuccess(resp.success);
@@ -97,14 +107,14 @@ const WingsPage = () => {
   return (
     <div className="flex items-center justify-between flex-wrap">
       <div className="flex w-full items-center justify-between flex-wrap">
-        <h1 className="text-3xl">Wings / Alas</h1>
+        <h1 className="text-3xl">Wing / Pabellones</h1>
         <Dialog>
           <DialogTrigger className="bg-[#169f85] hover:bg-[#169f85] font-normal p-2 rounded-md text-white">
-            CREAR ALA
+            CREAR PABELLÓN
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle className="w-full text-center font-normal">Crear ala</DialogTitle>
+              <DialogTitle className="w-full text-center font-normal">Crear pabellón</DialogTitle>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 
@@ -143,6 +153,7 @@ const WingsPage = () => {
                                                     setValue(currentValue === value ? "" : campamento.nombre);
                                                     setId(campamento.id);
                                                     setOpen(false);
+                                                    setSectores(campamento.sectores)
                                                 }}
                                             >
                                                 <CheckIcon
@@ -165,6 +176,62 @@ const WingsPage = () => {
                             )}
                         />
 
+                    <FormField
+                      control={form.control}
+                            name="sectorId"
+                            render={({field}) => (
+                            <FormItem className='flex flex-col gap-1'>
+                                <FormLabel>Selecciona un sector.</FormLabel>
+                                <FormControl className='w-full text-black'>
+                                <Popover open={openSector} onOpenChange={setOpenSector}>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                        variant="outline"
+                                        role="combobox"
+                                        aria-expanded={openSector}
+                                        className="w-full justify-between"
+                                        >
+                                        {valueSector
+                                            ? sectores.find((sector:any) => sector.nombre === valueSector)?.nombre
+                                            : "Selecciona un sector..."}
+                                        <ArrowDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-full p-0">
+                                        <Command>
+                                        <CommandInput placeholder="Busca un sector..." />
+                                        <CommandEmpty>No se encontrarón registros.</CommandEmpty>
+                                        <CommandGroup>
+                                            {sectores.map((sector:any) => (
+                                            <CommandItem
+                                                key={sector.nombre}
+                                                value={sector.nombre}
+                                                onSelect={(currentValue) => {
+                                                    console.log(currentValue);
+                                                    setValueSector(currentValue === valueSector ? "" : sector.nombre);
+                                                    setIdSector(sector.id);
+                                                    setOpenSector(false);
+                                                }}
+                                            >
+                                                <CheckIcon
+                                                className={cn(
+                                                    "mr-2 h-4 w-4",
+                                                    valueSector === sector.nombre ? "opacity-100" : "opacity-0"
+                                                )}
+                                                />
+                                                {sector.nombre}
+                                            </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                        </Command>
+                                    </PopoverContent>
+                                    </Popover>
+                                </FormControl>
+                                {/* <FormDescription /> */}
+                                <FormMessage className='m-0'/>
+                            </FormItem>
+                            )}
+                        />
 
                   <FormField
                     control={form.control}
@@ -173,7 +240,20 @@ const WingsPage = () => {
                       <FormItem>
                         <FormLabel className='text-md'>Nombre</FormLabel>
                         <FormControl>
-                          <Input  {...field} type="text" placeholder="Ala 1" disabled={isPending}/>
+                          <Input  {...field} type="text" placeholder="Pabellón 1" disabled={isPending}/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="piso"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='text-md'>Piso</FormLabel>
+                        <FormControl>
+                          <Input  {...field} type="text" placeholder="Piso 1" disabled={isPending}/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

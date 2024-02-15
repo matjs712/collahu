@@ -98,7 +98,7 @@ const UsuariosPage = () => {
           <DialogTrigger className="bg-[#169f85] hover:bg-[#169f85] font-normal p-2 rounded-md text-white">
             CREAR USUARIO
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent style={{ height:'90%', overflowY:'auto' }}>
             <DialogHeader>
               <DialogTitle className="w-full text-center font-normal">Crear usuario</DialogTitle>
               <Form {...form}>
@@ -178,14 +178,14 @@ const UsuariosPage = () => {
                         <Select 
                             onValueChange={field.onChange}
                         >
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Rol" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="recepcionista">Recepcionista</SelectItem>
                                 <SelectItem value="huesped">Huesped</SelectItem>
-                                <SelectItem value="administrador interno">Administrador interno</SelectItem>
-                                <SelectItem value="administrador externo">Administrador externo</SelectItem>
+                                <SelectItem value="CMDIC">CMDIC</SelectItem>
+                                <SelectItem value="ESED">ESED</SelectItem>
                                 <SelectItem value="administrador de aplicación">Administrador de aplicación</SelectItem>
                             </SelectContent>
                             </Select>

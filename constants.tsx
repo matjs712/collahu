@@ -7,7 +7,11 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     path: '/campamentos',
   },
   {
-    title: 'Wings',
+    title: 'Sector',
+    path: '/sectores',
+  },
+  {
+    title: 'Wing / Pabellones',
     path: '/wings',
     submenu: false,
     subMenuItems: [

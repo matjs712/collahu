@@ -4,8 +4,6 @@ import * as z from 'zod'
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -13,25 +11,24 @@ import {
 import { useEffect, useRef, useState, useTransition } from "react"
 import { BarLoader } from "react-spinners"
 import { toast } from "sonner"
-import { CampamentoSchema, WingSchema } from "@/schemas"
+import { SectorSchema, WingSchema } from "@/schemas"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { FormError } from "@/components/form-error"
 import { FormSuccess } from "@/components/form-success"
-import { editCampamento, getCampamento } from "@/actions/campamentos"
+import { getCampamento } from "@/actions/campamentos"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Campamento } from "../campamentos_columns"
 import { getCampamentosData } from "@/data/campamentos"
 import { ArrowDownIcon, CheckIcon } from "@radix-ui/react-icons"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command"
 import { cn } from "@/lib/utils"
-import { editWing } from "@/actions/wings"
+import { editSector } from "@/actions/sectores"
 
-const EditWing = ({wing, id}:{wing:z.infer<typeof WingSchema>, id: string}) => {
+const EditSector = ({sector, id}:{sector:z.infer<typeof SectorSchema>, id: string}) => {
     
-    const inputFileRef = useRef<HTMLInputElement>(null);
     const [isPending, startTransition] = useTransition()
     const [success, setSuccess] = useState<string | undefined>("");
     const [error, setError] = useState<string | undefined>("");
@@ -44,7 +41,7 @@ const EditWing = ({wing, id}:{wing:z.infer<typeof WingSchema>, id: string}) => {
       // setLoading(true);
       const fetchData = async () => {
         try {
-          const campamento = await getCampamento({id: wing.campamentoId});
+          const campamento = await getCampamento({id: sector.campamentoId});
           // @ts-ignore
           setValue(campamento?.nombre);
           // @ts-ignore
@@ -64,10 +61,8 @@ const EditWing = ({wing, id}:{wing:z.infer<typeof WingSchema>, id: string}) => {
     const form = useForm<z.infer<typeof WingSchema>>({
         resolver: zodResolver(WingSchema),
         defaultValues: {
-          nombre: wing.nombre || undefined,
-          descripcion: wing.descripcion || undefined,
-          n_habitaciones: wing.n_habitaciones || undefined,
-          campamentoId: wing.campamentoId || undefined,
+          nombre: sector.nombre || undefined,
+          campamentoId: sector.campamentoId || undefined,
         },
       })
 
@@ -76,7 +71,7 @@ const EditWing = ({wing, id}:{wing:z.infer<typeof WingSchema>, id: string}) => {
           const mappedValues = { ...values, campamentoId: idCampamento }
           
           
-            editWing({values: mappedValues, id})
+            editSector({values: mappedValues, id})
             .then((resp) => {
               if(resp.success){
                 setSuccess(resp.success);
@@ -95,7 +90,7 @@ const EditWing = ({wing, id}:{wing:z.infer<typeof WingSchema>, id: string}) => {
     <DialogTrigger className="w-full text-start px-2">Editar</DialogTrigger>
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Editar pabellòn {wing.nombre}</DialogTitle>
+        <DialogTitle>Editar sector {sector.nombre}</DialogTitle>
       </DialogHeader>
       <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -171,45 +166,8 @@ const EditWing = ({wing, id}:{wing:z.infer<typeof WingSchema>, id: string}) => {
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name="descripcion"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className='text-md'>Descripción</FormLabel>
-                        <FormControl>
-                          <Input {...field}  type='text' placeholder="Ingresa la descripción del campamento" disabled={isPending}/>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="n_habitaciones"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className='text-md'>Número de habítaciones</FormLabel>
-                        <FormControl>
-                          <Input {...field}
-                            value={Number(field.value) || 0}
-                            type='number' 
-                            placeholder="0" 
-                            disabled={isPending}
-                            onChange={(e) => {
-                              const newValue = e.target.value;
-                              field.onChange(newValue !== '' ? Number(newValue) : ''); // Convertir a número
-                            }}
-                            />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                        <FormError message={error} />
-                        <FormSuccess message={success} />
+                  <FormError message={error} />
+                  <FormSuccess message={success} />
                   <Button disabled={isPending} type="submit" size="lg" className='w-full text-md font-semibold'>{isPending ? <BarLoader color="white"/> : 'Actualizar'}</Button>
                 </form>
               </Form>
@@ -218,4 +176,4 @@ const EditWing = ({wing, id}:{wing:z.infer<typeof WingSchema>, id: string}) => {
   )
 }
 
-export default EditWing
+export default EditSector

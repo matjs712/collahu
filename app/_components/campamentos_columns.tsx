@@ -27,6 +27,7 @@ export type Campamento = {
     id:                string
     nombre:            string
     descripcion?:       string
+    direccion?:         string
     img?:               string
 }
 export type Campamento2 = {
@@ -50,6 +51,10 @@ export const columns: ColumnDef<Campamento>[] = [
     {
       accessorKey: "descripcion",
       header: "Descripcion",
+    },
+    {
+      accessorKey: "direccion",
+      header: "Dirección",
     },
     {
       accessorKey: "img",

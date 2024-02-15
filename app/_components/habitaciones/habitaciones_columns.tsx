@@ -41,16 +41,24 @@ export const columns: ColumnDef<Habitacion>[] = [
       header: "Descripcion",
     },
     {
+      accessorKey: "piso",
+      header: "Piso",
+    },
+    {
       accessorKey: "campamento.nombre",
       header: "Campamento",
     },
     {
       accessorKey: "wing.nombre",
-      header: "Ala",
+      header: "Pabellón",
     },
     {
       accessorKey: "n_camas",
       header: "N°Camas",
+    },
+    {
+      accessorKey: "tipo_cama",
+      header: "Tipo de cama",
     },
     {
       accessorKey: "tipo_huesped",
